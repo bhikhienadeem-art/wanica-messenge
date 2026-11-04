@@ -42,7 +42,7 @@
                     const data = docSnapshot.data();
                     const opt = document.createElement('option');
                     opt.value = docSnapshot.id;
-                    opt.textContent = `${data.dept} (${docSnapshot.id})`;
+                    opt.textContent = `${data.dept} (${docSnapshot.id}) [${data.role || 'user'}]`;
                     select.appendChild(opt);
                 });
             } catch (err) {
@@ -53,6 +53,20 @@
     <style>
         .transparent-logo {
             mix-blend-mode: multiply;
+        }
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+            #messages-container, #messages-container * {
+                visibility: visible;
+            }
+            #messages-container {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+            }
         }
     </style>
 </head>
@@ -81,7 +95,7 @@
                 <div class="w-52 h-52 mb-2 flex items-center justify-center">
                     <img src="logo.png" alt="Districtscommissariaat Wanica Centrum" class="w-full h-full object-contain transparent-logo">
                 </div>
-                <h2 class="text-xl font-bold text-slate-800 text-center">Inloggen Wanica Centrum Messenger</h2>
+                <h2 class="text-xl font-bold text-slate-800 text-center">Inloggen Wanica Messenger</h2>
                 <p class="text-xs text-slate-500 text-center">Selecteer uw afdeling of beheerder.</p>
             </div>
             
@@ -90,7 +104,7 @@
                     <label class="block text-xs font-semibold uppercase text-slate-600 mb-1">Selecteer Gebruiker / Afdeling</label>
                     <select id="login-username" class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-emerald-500 text-sm bg-white" required>
                         <option value="">-- Kies uw afdeling of beheerder --</option>
-                        <option value="admin">Administrator (Beheer)</option>
+                        <option value="admin">Administrator (Systeembeheer)</option>
                     </select>
                 </div>
                 <div>
@@ -106,29 +120,41 @@
     <div id="main-screen" class="flex-1 flex flex-col hidden overflow-hidden">
         <!-- Admin Paneel -->
         <div id="admin-panel" class="bg-slate-800 text-white p-4 shadow-md hidden">
-            <div class="max-w-4xl mx-auto">
-                <div class="flex justify-between items-center mb-3">
+            <div class="max-w-4xl mx-auto space-y-3">
+                <div class="flex justify-between items-center">
                     <h3 class="font-bold text-emerald-400 text-sm flex items-center gap-2">
-                        ⚙️ Beheerderspaneel (Gebruikersbeheer)
+                        ⚙️ Beheerderspaneel (Gebruikers- en Rechtenbeheer)
                     </h3>
+                    <div class="flex gap-2">
+                        <button onclick="printMessages()" class="bg-blue-600 hover:bg-blue-500 text-white px-3 py-1.5 rounded text-xs font-semibold transition">🖨️ Print / Opslaan als PDF</button>
+                    </div>
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <!-- Nieuwe gebruiker formulier -->
                     <form id="create-user-form" class="bg-slate-700 p-3 rounded-lg space-y-2 text-xs">
-                        <span class="font-semibold text-slate-200 block mb-1">Nieuwe Gebruiker Toevoegen</span>
+                        <span class="font-semibold text-slate-200 block mb-1">Nieuwe Gebruiker / Rechten Toevoegen</span>
                         <input type="text" id="new-user-id" placeholder="Inlognaam (bijv. burgerzaken)" class="w-full p-2 rounded bg-slate-600 border border-slate-500 text-white" required>
-                        <input type="text" id="new-user-dept" placeholder="Afdeling (bijv. Hoofd Burgerzaken)" class="w-full p-2 rounded bg-slate-600 border border-slate-500 text-white" required>
+                        <input type="text" id="new-user-dept" placeholder="Afdelingsnaam (bijv. Hoofd Burgerzaken)" class="w-full p-2 rounded bg-slate-600 border border-slate-500 text-white" required>
                         <input type="password" id="new-user-pass" placeholder="Wachtwoord" class="w-full p-2 rounded bg-slate-600 border border-slate-500 text-white" required>
+                        <div>
+                            <label class="block text-slate-300 mb-1">Toegangsrecht / Rol:</label>
+                            <select id="new-user-role" class="w-full p-2 rounded bg-slate-600 border border-slate-500 text-white">
+                                <option value="user">User (Standaard afdeling)</option>
+                                <option value="admin">Admin (Beheerdersrechten)</option>
+                            </select>
+                        </div>
                         <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-500 p-2 rounded font-semibold text-white">Gebruiker Opslaan</button>
                     </form>
+                    <!-- Bestaande gebruikerslijst -->
                     <div class="bg-slate-700 p-3 rounded-lg text-xs flex flex-col">
-                        <span class="font-semibold text-slate-200 mb-2 block">Geregistreerde Gebruikers</span>
-                        <div id="users-list" class="flex-1 overflow-y-auto max-h-36 space-y-1 pr-1"></div>
+                        <span class="font-semibold text-slate-200 mb-2 block">Geregistreerde Gebruikers & Rechten</span>
+                        <div id="users-list" class="flex-1 overflow-y-auto max-h-40 space-y-1 pr-1"></div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Vaste Aankondiging Banner (Optioneel zichtbaar als er een gepind bericht is) -->
+        <!-- Vaste Aankondiging Banner -->
         <div id="pinned-banner" class="bg-amber-50 border-b border-amber-200 p-3 text-amber-900 text-xs hidden flex justify-between items-center shadow-inner">
             <div class="flex items-center gap-2">
                 <span class="font-bold bg-amber-200 px-2 py-0.5 rounded text-amber-900">📌 Belangrijke Aankondiging</span>
@@ -140,13 +166,13 @@
         <!-- Berichtenlijst -->
         <div class="flex-1 overflow-y-auto p-4 space-y-4" id="messages-container"></div>
 
-        <!-- Bericht versturen inclusief optie voor aankondiging of bijlage -->
+        <!-- Chat Invoer -->
         <div class="bg-white border-t p-4 shadow-lg">
             <form id="chat-form" class="max-w-4xl mx-auto space-y-2">
                 <div class="flex gap-2 items-center">
-                    <input type="text" id="message-input" placeholder="Typ een bericht voor alle afdelingshoofden..." class="flex-1 p-3 border rounded-lg focus:ring-2 focus:ring-emerald-500 text-sm">
+                    <input type="text" id="message-input" placeholder="Typ een bericht voor alle afdelingen..." class="flex-1 p-3 border rounded-lg focus:ring-2 focus:ring-emerald-500 text-sm">
                     <input type="file" id="file-input" class="hidden" accept="image/*,.pdf,.doc,.docx">
-                    <button type="button" onclick="document.getElementById('file-input').click()" class="bg-slate-200 hover:bg-slate-300 text-slate-700 px-3 py-3 rounded-lg text-sm transition" title="Voeg bestand toe">📎</button>
+                    <button type="button" onclick="document.getElementById('file-input').click()" class="bg-slate-200 hover:bg-slate-300 text-slate-700 px-3 py-3 rounded-lg text-sm transition" title="Bestand toevoegen">📎</button>
                     <button type="submit" class="bg-emerald-700 text-white px-6 py-3 rounded-lg font-semibold hover:bg-emerald-800 transition text-sm">Verstuur</button>
                 </div>
                 <div class="flex items-center justify-between text-xs text-slate-500 px-1">
@@ -164,21 +190,20 @@
         let currentUser = null;
         let lastMessageCount = 0;
 
-        // Subtiel geluidssignaal (Web Audio API - geen externe audiofiles nodig)
         function playNotificationSound() {
             try {
                 const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
                 const osc = audioCtx.createOscillator();
                 const gain = audioCtx.createGain();
                 osc.type = 'sine';
-                osc.frequency.setValueAtTime(587.33, audioCtx.currentTime); // D5 noot
+                osc.frequency.setValueAtTime(587.33, audioCtx.currentTime);
                 gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
                 gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.3);
                 osc.connect(gain);
                 gain.connect(audioCtx.destination);
                 osc.start();
                 osc.stop(audioCtx.currentTime + 0.3);
-            } catch(e) { console.log("Audio niet toegestaan door browser"); }
+            } catch(e) {}
         }
 
         document.getElementById('file-input').addEventListener('change', (e) => {
@@ -215,7 +240,11 @@
                 });
 
                 if (foundUser) {
-                    currentUser = { name: foundUser.dept, dept: foundUser.dept, role: 'user' };
+                    currentUser = { 
+                        name: foundUser.dept, 
+                        dept: foundUser.dept, 
+                        role: foundUser.role || 'user' 
+                    };
                     setupApp();
                 } else {
                     alert('Onjuist wachtwoord of selectie!');
@@ -229,10 +258,11 @@
         function setupApp() {
             document.getElementById('login-screen').classList.add('hidden');
             document.getElementById('main-screen').classList.remove('hidden');
-            document.getElementById('user-info').textContent = currentUser.name;
+            document.getElementById('user-info').textContent = `${currentUser.name} (${currentUser.role.toUpperCase()})`;
             document.getElementById('user-info').classList.remove('hidden');
             document.getElementById('logout-btn').classList.remove('hidden');
 
+            // Alleen tonen als de gebruiker admin rechten heeft
             if (currentUser.role === 'admin') {
                 document.getElementById('admin-panel').classList.remove('hidden');
                 document.getElementById('pin-option-container').classList.remove('hidden');
@@ -250,10 +280,15 @@
             const userId = document.getElementById('new-user-id').value.trim();
             const dept = document.getElementById('new-user-dept').value.trim();
             const pass = document.getElementById('new-user-pass').value.trim();
+            const role = document.getElementById('new-user-role').value;
 
             try {
-                await window.setDoc(window.doc(window.db, "users", userId), { dept, password: pass });
-                alert(`Gebruiker '${userId}' opgeslagen!`);
+                await window.setDoc(window.doc(window.db, "users", userId), { 
+                    dept, 
+                    password: pass, 
+                    role 
+                });
+                alert(`Gebruiker '${userId}' met rol '${role.toUpperCase()}' succesvol opgeslagen!`);
                 document.getElementById('create-user-form').reset();
                 loadUsersList();
             } catch (err) {
@@ -279,7 +314,7 @@
                     item.innerHTML = `
                         <div>
                             <span class="font-bold text-emerald-300">${uId}</span> - <span class="text-slate-200">${data.dept}</span>
-                            <span class="text-slate-400 text-[10px] block">Wachtwoord: ${data.password}</span>
+                            <span class="text-amber-300 font-semibold text-[10px] uppercase block">Rol: ${data.role || 'user'} | Wachtwoord: ${data.password}</span>
                         </div>
                         <button onclick="deleteUser('${uId}')" class="bg-red-500 hover:bg-red-600 text-white px-2 py-1 rounded text-[10px]">Verwijder</button>
                     `;
@@ -298,6 +333,11 @@
         }
         window.deleteUser = deleteUser;
 
+        function printMessages() {
+            window.print();
+        }
+        window.printMessages = printMessages;
+
         document.getElementById('chat-form').addEventListener('submit', async (e) => {
             e.preventDefault();
             const input = document.getElementById('message-input');
@@ -310,7 +350,6 @@
 
             let fileData = null;
             if (file) {
-                // Converteer bestand naar veilige Base64 string voor opslag in Firestore
                 fileData = await new Promise((resolve) => {
                     const reader = new FileReader();
                     reader.onload = () => resolve({ name: file.name, url: reader.result, type: file.type });
@@ -327,9 +366,8 @@
                     file: fileData
                 };
 
-                const docRef = await window.addDoc(window.collection(window.db, "messages"), messagePayload);
+                await window.addDoc(window.collection(window.db, "messages"), messagePayload);
 
-                // Als het gepind moet worden
                 if(pinCheckbox && pinCheckbox.checked && currentUser.role === 'admin') {
                     await window.setDoc(window.doc(window.db, "settings", "pinnedMessage"), {
                         text: text || file.name,
@@ -348,7 +386,6 @@
         });
 
         function loadMessages() {
-            // Real-time listener voor gepinde mededeling
             window.onSnapshot(window.doc(window.db, "settings", "pinnedMessage"), (docSnap) => {
                 const banner = document.getElementById('pinned-banner');
                 if(docSnap.exists() && docSnap.data().text) {
@@ -361,7 +398,6 @@
                 }
             });
 
-            // Real-time chatberichten
             const q = window.query(window.collection(window.db, "messages"), window.orderBy("timestamp", "asc"));
             window.onSnapshot(q, (snapshot) => {
                 const container = document.getElementById('messages-container');
