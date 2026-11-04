@@ -263,7 +263,7 @@
         });
 
         function loadMessages() {
-            The q = window.query(window.collection(window.db, "messages"), window.orderBy("timestamp", "asc"));
+            const q = window.query(window.collection(window.db, "messages"), window.orderBy("timestamp", "asc"));
             window.onSnapshot(q, (snapshot) => {
                 const container = document.getElementById('messages-container');
                 container.innerHTML = '';
