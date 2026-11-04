@@ -54,6 +54,14 @@
         .transparent-logo {
             mix-blend-mode: multiply;
         }
+        /* Sfeervolle achtergrond met lichte logo-tinten */
+        .chat-bg {
+            background-color: #f7fafc;
+            background-image: radial-gradient(#047857 0.5px, transparent 0.5px), radial-gradient(#0284c7 0.5px, #f7fafc 0.5px);
+            background-size: 20px 20px;
+            background-position: 0 0, 10px 10px;
+            background-opacity: 0.05;
+        }
         @media print {
             body * {
                 visibility: hidden;
@@ -70,48 +78,51 @@
         }
     </style>
 </head>
-<body class="bg-slate-100 h-screen flex flex-col font-sans">
-    <!-- Header -->
-    <header class="bg-emerald-800 text-white p-4 shadow-md flex justify-between items-center">
+<body class="bg-slate-50 h-screen flex flex-col font-sans">
+    <!-- Header in Logo Stijl (Diep Groen met Blauw/Geel accenten) -->
+    <header class="bg-emerald-900 text-white p-4 shadow-lg flex justify-between items-center border-b-4 border-amber-400">
         <div class="flex items-center gap-3">
-            <div class="bg-white rounded-full p-1 shadow h-11 w-11 flex items-center justify-center overflow-hidden">
+            <div class="bg-white rounded-full p-1 shadow-md h-12 w-12 flex items-center justify-center overflow-hidden border-2 border-sky-400">
                 <img src="logo.png" alt="Logo Wanica Centrum" class="h-full w-full object-contain transparent-logo">
             </div>
             <div>
-                <h1 class="text-lg font-bold leading-tight">Commissariaat Wanica Centrum</h1>
+                <h1 class="text-lg font-bold leading-tight tracking-wide text-amber-300">Commissariaat Wanica Centrum</h1>
                 <p class="text-xs text-emerald-200">Interne Afdelingscommunicatie & Meldsysteem</p>
             </div>
         </div>
         <div class="flex items-center gap-3">
-            <div id="user-info" class="text-sm bg-emerald-700 px-3 py-1 rounded hidden font-medium"></div>
-            <button id="logout-btn" onclick="logout()" class="text-xs bg-red-600 hover:bg-red-700 px-3 py-1.5 rounded hidden transition">Uitloggen</button>
+            <div id="user-info" class="text-sm bg-emerald-800 border border-emerald-600 px-3 py-1 rounded-lg hidden font-medium text-emerald-100 shadow-inner"></div>
+            <button id="logout-btn" onclick="logout()" class="text-xs bg-red-600 hover:bg-red-700 px-3 py-1.5 rounded-lg hidden transition font-semibold shadow">Uitloggen</button>
         </div>
     </header>
 
     <!-- Login Scherm -->
-    <div id="login-screen" class="flex-1 flex items-center justify-center p-4">
-        <div class="bg-white p-8 rounded-xl shadow-lg max-w-md w-full border-t-4 border-emerald-600">
-            <div class="flex flex-col items-center mb-4">
-                <div class="w-52 h-52 mb-2 flex items-center justify-center">
+    <div id="login-screen" class="flex-1 flex items-center justify-center p-4 bg-gradient-to-br from-emerald-50 via-sky-50 to-amber-50">
+        <div class="bg-white p-8 rounded-2xl shadow-2xl max-w-md w-full border-t-8 border-emerald-700 relative overflow-hidden">
+            <div class="absolute -right-10 -top-10 w-32 h-32 bg-sky-100 rounded-full blur-2xl opacity-50"></div>
+            <div class="absolute -left-10 -bottom-10 w-32 h-32 bg-amber-100 rounded-full blur-2xl opacity-50"></div>
+            
+            <div class="flex flex-col items-center mb-6 relative z-10">
+                <div class="w-44 h-44 mb-3 flex items-center justify-center p-2 bg-slate-50 rounded-full shadow-inner border border-slate-200">
                     <img src="logo.png" alt="Districtscommissariaat Wanica Centrum" class="w-full h-full object-contain transparent-logo">
                 </div>
-                <h2 class="text-xl font-bold text-slate-800 text-center">Inloggen Wanica Messenger</h2>
-                <p class="text-xs text-slate-500 text-center">Selecteer uw afdeling of beheerder.</p>
+                <h2 class="text-2xl font-extrabold text-slate-800 text-center">Wanica Centrum Messenger</h2>
+                <p class="text-xs text-slate-500 text-center mt-1">Selecteer uw afdeling om beveiligd in te loggen.</p>
             </div>
             
-            <form id="login-form" class="space-y-4">
+            <form id="login-form" class="space-y-4 relative z-10">
                 <div>
-                    <label class="block text-xs font-semibold uppercase text-slate-600 mb-1">Selecteer Gebruiker / Afdeling</label>
-                    <select id="login-username" class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-emerald-500 text-sm bg-white" required>
+                    <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Selecteer Gebruiker / Afdeling</label>
+                    <select id="login-username" class="w-full p-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-emerald-600 text-sm bg-slate-50 font-medium" required>
                         <option value="">-- Kies uw afdeling of beheerder --</option>
                         <option value="admin">Administrator (Systeembeheer)</option>
                     </select>
                 </div>
                 <div>
-                    <label class="block text-xs font-semibold uppercase text-slate-600 mb-1">Wachtwoord</label>
-                    <input type="password" id="login-password" placeholder="Voer uw wachtwoord in" class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-emerald-500 text-sm" required>
+                    <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Wachtwoord</label>
+                    <input type="password" id="login-password" placeholder="Voer uw wachtwoord in" class="w-full p-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-emerald-600 text-sm bg-slate-50" required>
                 </div>
-                <button type="submit" class="w-full bg-emerald-700 text-white p-3 rounded-lg font-semibold hover:bg-emerald-800 transition text-sm">Inloggen</button>
+                <button type="submit" class="w-full bg-emerald-700 text-white p-3.5 rounded-xl font-bold hover:bg-emerald-800 transition text-sm shadow-lg shadow-emerald-700/20">Inloggen</button>
             </form>
         </div>
     </div>
@@ -119,67 +130,63 @@
     <!-- Hoofdscherm -->
     <div id="main-screen" class="flex-1 flex flex-col hidden overflow-hidden">
         <!-- Admin Paneel -->
-        <div id="admin-panel" class="bg-slate-800 text-white p-4 shadow-md hidden">
+        <div id="admin-panel" class="bg-slate-900 text-white p-4 shadow-xl hidden border-b border-emerald-600">
             <div class="max-w-4xl mx-auto space-y-3">
                 <div class="flex justify-between items-center">
-                    <h3 class="font-bold text-emerald-400 text-sm flex items-center gap-2">
+                    <h3 class="font-bold text-amber-300 text-sm flex items-center gap-2">
                         ⚙️ Beheerderspaneel (Gebruikers- en Rechtenbeheer)
                     </h3>
-                    <div class="flex gap-2">
-                        <button onclick="printMessages()" class="bg-blue-600 hover:bg-blue-500 text-white px-3 py-1.5 rounded text-xs font-semibold transition">🖨️ Print / Opslaan als PDF</button>
-                    </div>
+                    <button onclick="printMessages()" class="bg-sky-600 hover:bg-sky-500 text-white px-3.5 py-1.5 rounded-lg text-xs font-bold shadow transition flex items-center gap-1">🖨️ Print / Opslaan als PDF</button>
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <!-- Nieuwe gebruiker formulier -->
-                    <form id="create-user-form" class="bg-slate-700 p-3 rounded-lg space-y-2 text-xs">
-                        <span class="font-semibold text-slate-200 block mb-1">Nieuwe Gebruiker / Rechten Toevoegen</span>
-                        <input type="text" id="new-user-id" placeholder="Inlognaam (bijv. burgerzaken)" class="w-full p-2 rounded bg-slate-600 border border-slate-500 text-white" required>
-                        <input type="text" id="new-user-dept" placeholder="Afdelingsnaam (bijv. Hoofd Burgerzaken)" class="w-full p-2 rounded bg-slate-600 border border-slate-500 text-white" required>
-                        <input type="password" id="new-user-pass" placeholder="Wachtwoord" class="w-full p-2 rounded bg-slate-600 border border-slate-500 text-white" required>
+                    <form id="create-user-form" class="bg-slate-800 p-4 rounded-xl space-y-2.5 text-xs border border-slate-700 shadow-inner">
+                        <span class="font-bold text-amber-200 block mb-1">Nieuwe Gebruiker / Rechten Toevoegen</span>
+                        <input type="text" id="new-user-id" placeholder="Inlognaam (bijv. burgerzaken)" class="w-full p-2.5 rounded-lg bg-slate-700 border border-slate-600 text-white focus:ring-2 focus:ring-emerald-500" required>
+                        <input type="text" id="new-user-dept" placeholder="Afdelingsnaam (bijv. Hoofd Burgerzaken)" class="w-full p-2.5 rounded-lg bg-slate-700 border border-slate-600 text-white focus:ring-2 focus:ring-emerald-500" required>
+                        <input type="password" id="new-user-pass" placeholder="Wachtwoord" class="w-full p-2.5 rounded-lg bg-slate-700 border border-slate-600 text-white focus:ring-2 focus:ring-emerald-500" required>
                         <div>
-                            <label class="block text-slate-300 mb-1">Toegangsrecht / Rol:</label>
-                            <select id="new-user-role" class="w-full p-2 rounded bg-slate-600 border border-slate-500 text-white">
+                            <label class="block text-slate-300 mb-1 font-semibold">Toegangsrecht / Rol:</label>
+                            <select id="new-user-role" class="w-full p-2.5 rounded-lg bg-slate-700 border border-slate-600 text-white font-medium">
                                 <option value="user">User (Standaard afdeling)</option>
                                 <option value="admin">Admin (Beheerdersrechten)</option>
                             </select>
                         </div>
-                        <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-500 p-2 rounded font-semibold text-white">Gebruiker Opslaan</button>
+                        <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-500 p-2.5 rounded-lg font-bold text-white shadow transition">Gebruiker Opslaan</button>
                     </form>
-                    <!-- Bestaande gebruikerslijst -->
-                    <div class="bg-slate-700 p-3 rounded-lg text-xs flex flex-col">
-                        <span class="font-semibold text-slate-200 mb-2 block">Geregistreerde Gebruikers & Rechten</span>
-                        <div id="users-list" class="flex-1 overflow-y-auto max-h-40 space-y-1 pr-1"></div>
+                    <div class="bg-slate-800 p-4 rounded-xl text-xs flex flex-col border border-slate-700 shadow-inner">
+                        <span class="font-bold text-amber-200 mb-2 block">Geregistreerde Gebruikers & Rechten</span>
+                        <div id="users-list" class="flex-1 overflow-y-auto max-h-40 space-y-2 pr-1"></div>
                     </div>
                 </div>
             </div>
         </div>
 
         <!-- Vaste Aankondiging Banner -->
-        <div id="pinned-banner" class="bg-amber-50 border-b border-amber-200 p-3 text-amber-900 text-xs hidden flex justify-between items-center shadow-inner">
+        <div id="pinned-banner" class="bg-amber-100 border-b-2 border-amber-300 p-3 text-amber-900 text-xs hidden flex justify-between items-center shadow-md">
             <div class="flex items-center gap-2">
-                <span class="font-bold bg-amber-200 px-2 py-0.5 rounded text-amber-900">📌 Belangrijke Aankondiging</span>
-                <span id="pinned-text" class="font-medium"></span>
+                <span class="font-extrabold bg-amber-400 text-amber-950 px-2.5 py-1 rounded-md shadow-sm">📌 Belangrijke Aankondiging</span>
+                <span id="pinned-text" class="font-semibold text-slate-900"></span>
             </div>
-            <span id="pinned-sender" class="text-amber-700 italic"></span>
+            <span id="pinned-sender" class="text-amber-800 italic font-medium"></span>
         </div>
 
-        <!-- Berichtenlijst -->
-        <div class="flex-1 overflow-y-auto p-4 space-y-4" id="messages-container"></div>
+        <!-- Berichtenlijst met sfeervolle achtergrond -->
+        <div class="flex-1 overflow-y-auto p-6 space-y-4 chat-bg" id="messages-container"></div>
 
         <!-- Chat Invoer -->
-        <div class="bg-white border-t p-4 shadow-lg">
+        <div class="bg-white border-t-2 border-slate-200 p-4 shadow-2xl">
             <form id="chat-form" class="max-w-4xl mx-auto space-y-2">
-                <div class="flex gap-2 items-center">
-                    <input type="text" id="message-input" placeholder="Typ een bericht voor alle afdelingen..." class="flex-1 p-3 border rounded-lg focus:ring-2 focus:ring-emerald-500 text-sm">
+                <div class="flex gap-3 items-center">
+                    <input type="text" id="message-input" placeholder="Typ een bericht voor alle afdelingen..." class="flex-1 p-3.5 border-2 border-slate-200 rounded-2xl focus:ring-2 focus:ring-emerald-600 focus:border-emerald-600 text-sm shadow-sm">
                     <input type="file" id="file-input" class="hidden" accept="image/*,.pdf,.doc,.docx">
-                    <button type="button" onclick="document.getElementById('file-input').click()" class="bg-slate-200 hover:bg-slate-300 text-slate-700 px-3 py-3 rounded-lg text-sm transition" title="Bestand toevoegen">📎</button>
-                    <button type="submit" class="bg-emerald-700 text-white px-6 py-3 rounded-lg font-semibold hover:bg-emerald-800 transition text-sm">Verstuur</button>
+                    <button type="button" onclick="document.getElementById('file-input').click()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 px-4 py-3.5 rounded-2xl text-sm transition font-bold shadow-sm border border-slate-300" title="Bestand toevoegen">📎 Bijlage</button>
+                    <button type="submit" class="bg-emerald-700 text-white px-7 py-3.5 rounded-2xl font-bold hover:bg-emerald-800 transition text-sm shadow-lg shadow-emerald-700/20">Verstuur</button>
                 </div>
-                <div class="flex items-center justify-between text-xs text-slate-500 px-1">
-                    <span id="file-name-display" class="italic text-emerald-600">Geen bestand geselecteerd</span>
-                    <label id="pin-option-container" class="hidden items-center gap-1 cursor-pointer">
-                        <input type="checkbox" id="pin-checkbox" class="rounded text-emerald-600 focus:ring-emerald-500">
-                        <span class="font-medium text-amber-800">Vastzetten als belangrijke aankondiging (Pin)</span>
+                <div class="flex items-center justify-between text-xs text-slate-500 px-2">
+                    <span id="file-name-display" class="italic text-emerald-700 font-semibold">Geen bestand geselecteerd</span>
+                    <label id="pin-option-container" class="hidden items-center gap-1.5 cursor-pointer bg-amber-50 px-2.5 py-1 rounded-lg border border-amber-200">
+                        <input type="checkbox" id="pin-checkbox" class="rounded text-amber-600 focus:ring-amber-500 w-4 h-4">
+                        <span class="font-bold text-amber-900">Vastzetten als belangrijke aankondiging (Pin)</span>
                     </label>
                 </div>
             </form>
@@ -262,7 +269,6 @@
             document.getElementById('user-info').classList.remove('hidden');
             document.getElementById('logout-btn').classList.remove('hidden');
 
-            // Alleen tonen als de gebruiker admin rechten heeft
             if (currentUser.role === 'admin') {
                 document.getElementById('admin-panel').classList.remove('hidden');
                 document.getElementById('pin-option-container').classList.remove('hidden');
@@ -310,13 +316,13 @@
                     const data = docSnapshot.data();
                     const uId = docSnapshot.id;
                     const item = document.createElement('div');
-                    item.className = 'flex justify-between items-center bg-slate-600 p-2 rounded text-xs';
+                    item.className = 'flex justify-between items-center bg-slate-700 p-2.5 rounded-lg text-xs border border-slate-600 shadow-sm';
                     item.innerHTML = `
                         <div>
-                            <span class="font-bold text-emerald-300">${uId}</span> - <span class="text-slate-200">${data.dept}</span>
-                            <span class="text-amber-300 font-semibold text-[10px] uppercase block">Rol: ${data.role || 'user'} | Wachtwoord: ${data.password}</span>
+                            <span class="font-extrabold text-amber-300">${uId}</span> - <span class="text-slate-200">${data.dept}</span>
+                            <span class="text-emerald-300 font-semibold text-[10px] uppercase block mt-0.5">Rol: ${data.role || 'user'} | Wachtw: ${data.password}</span>
                         </div>
-                        <button onclick="deleteUser('${uId}')" class="bg-red-500 hover:bg-red-600 text-white px-2 py-1 rounded text-[10px]">Verwijder</button>
+                        <button onclick="deleteUser('${uId}')" class="bg-red-600 hover:bg-red-700 text-white px-2.5 py-1.5 rounded-md text-[10px] font-bold shadow transition">Verwijder</button>
                     `;
                     listDiv.appendChild(item);
                 });
@@ -418,9 +424,9 @@
                     let fileHtml = '';
                     if(data.file) {
                         if(data.file.type.startsWith('image/')) {
-                            fileHtml = `<div class="mt-2"><img src="${data.file.url}" class="max-h-48 rounded-lg border object-contain cursor-pointer" onclick="window.open('${data.file.url}')"></div>`;
+                            fileHtml = `<div class="mt-2"><img src="${data.file.url}" class="max-h-48 rounded-lg border object-contain cursor-pointer shadow-sm" onclick="window.open('${data.file.url}')"></div>`;
                         } else {
-                            fileHtml = `<div class="mt-2"><a href="${data.file.url}" download="${data.file.name}" class="text-xs bg-slate-100 hover:bg-slate-200 text-blue-700 underline p-2 rounded flex items-center gap-1 font-medium">📄 ${data.file.name} (Downloaden)</a></div>`;
+                            fileHtml = `<div class="mt-2"><a href="${data.file.url}" download="${data.file.name}" class="text-xs bg-sky-50 hover:bg-sky-100 text-sky-800 underline p-2 rounded-lg flex items-center gap-1.5 font-bold border border-sky-200">📄 ${data.file.name} (Downloaden)</a></div>`;
                         }
                     }
 
@@ -431,12 +437,12 @@
                     }
 
                     div.innerHTML = `
-                        <div class="text-xs text-slate-500 mb-1 font-medium flex gap-2">
+                        <div class="text-xs text-slate-600 mb-1 font-bold flex gap-2">
                             <span>${data.senderName}</span>
-                            <span class="text-slate-400 text-[10px]">${timeString}</span>
+                            <span class="text-slate-400 font-normal text-[10px]">${timeString}</span>
                         </div>
-                        <div class="max-w-md p-3 rounded-xl shadow-sm text-sm ${isMe ? 'bg-emerald-700 text-white rounded-br-none' : 'bg-white text-slate-800 rounded-bl-none border'}">
-                            <div>${data.text}</div>
+                        <div class="max-w-md p-3.5 rounded-2xl shadow-md text-sm ${isMe ? 'bg-emerald-800 text-white rounded-br-none border border-emerald-700' : 'bg-white text-slate-900 rounded-bl-none border border-slate-200'}">
+                            <div class="leading-relaxed">${data.text}</div>
                             ${fileHtml}
                         </div>
                     `;
