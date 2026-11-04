@@ -54,12 +54,9 @@
         .transparent-logo {
             mix-blend-mode: multiply;
         }
-        /* Prachtige logo-blauwe achtergrond met subtiele textuur */
+        /* Egale, frisse logo-blauwe achtergrond zonder puntjes */
         .chat-bg {
             background-color: #e0f2fe;
-            background-image: radial-gradient(#0284c7 0.75px, transparent 0.75px), radial-gradient(#0369a1 0.75px, #e0f2fe 0.75px);
-            background-size: 24px 24px;
-            background-position: 0 0, 12px 12px;
         }
         @media print {
             body * {
@@ -106,7 +103,7 @@
                 <div class="w-44 h-44 mb-3 flex items-center justify-center p-2 bg-slate-50 rounded-full shadow-inner border border-slate-200">
                     <img src="logo.png" alt="Districtscommissariaat Wanica Centrum" class="w-full h-full object-contain transparent-logo">
                 </div>
-                <h2 class="text-2xl font-extrabold text-slate-800 text-center">Wanica Centrum Messenger</h2>
+                <h2 class="text-2xl font-extrabold text-slate-800 text-center">Wanica Messenger</h2>
                 <p class="text-xs text-slate-500 text-center mt-1">Selecteer uw afdeling om beveiligd in te loggen.</p>
             </div>
             
@@ -170,7 +167,7 @@
             <span id="pinned-sender" class="text-amber-800 italic font-medium"></span>
         </div>
 
-        <!-- Berichtenlijst met Logo-Blauwe achtergrond -->
+        <!-- Berichtenlijst met egale logo-blauwe achtergrond -->
         <div class="flex-1 overflow-y-auto p-6 space-y-4 chat-bg" id="messages-container"></div>
 
         <!-- Chat Invoer -->
